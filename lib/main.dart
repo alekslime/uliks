@@ -15,10 +15,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Education App',
       debugShowCheckedModeBanner: false,
-    theme: ThemeData(
+      theme: ThemeData(
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
-        fontFamily: 'SF Pro',
+        fontFamily: 'Spartan',
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontFamily: 'Lato'), // Lato used for smaller text
+          bodyMedium: TextStyle(fontFamily: 'Lato'),
+        ),
         pageTransitionsTheme: const PageTransitionsTheme(
           builders: {
             TargetPlatform.android: CupertinoPageTransitionsBuilder(),
@@ -980,7 +984,7 @@ Widget _buildRecommendedSection() {
                 child: Hero(
                   tag: heroTag,
                   child: Material(
-                    color: Colors.transparent,
+                    color: const Color.fromARGB(0, 209, 76, 76),
                     child: Container(
                       width: 260,
                       padding: const EdgeInsets.all(16),
@@ -1280,13 +1284,13 @@ Widget _buildTrendingCard(Map<String, dynamic> lesson, int index) {
                    lesson['title'].toString().contains('Ekuacionet');
 
   final gradientColors = isOrange
-      ? [const Color(0xFFFFA24B), const Color(0xFFFF8C3A)] // orange
+      ? [const Color(0xFF59A4FF), const Color(0xFF6BB9FF)] // orange
       : [const Color(0xFF59A4FF), const Color(0xFF6BB9FF)]; // blue
 
   // 🔹 Adaptive text & icon colors for contrast
-  final textColor = isOrange ? Colors.white : Colors.black;
+  final textColor = isOrange ? const Color.fromARGB(255, 0, 0, 0) : Colors.black;
   final subTextColor =
-      isOrange ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.7);
+      isOrange ? const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8) : Colors.black.withOpacity(0.7);
   final iconBg = isOrange
       ? Colors.white.withOpacity(0.15)
       : Colors.black.withOpacity(0.15);
@@ -2031,139 +2035,157 @@ Widget _buildTrendingCard(Map<String, dynamic> lesson, int index) {
     );
   }
 
-  Widget _buildLiveClassCard(Map<String, dynamic> classData, int index) {
-    return Padding(
-      padding: EdgeInsets.only(right: index < _liveClasses.length - 1 ? 16 : 0),
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => LiveClassroomPage(classData: classData),
-            ),
-          );
-        },
-        child: Container(
-          width: 280,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color(0xFF9B8FD6),
-                Color(0xFF8B7FC6),
+Widget _buildLiveClassCard(Map<String, dynamic> classData, int index) {
+  // 🎨 Decide color by subject keywords in the title
+  final title = classData['title'].toString().toLowerCase();
+
+  List<Color> gradientColors;
+  if (title.contains('biologji')) {
+    gradientColors = [const Color(0xFF59A4FF), const Color(0xFF6BB9FF)]; // blue
+  } else if (title.contains('matematik')) {
+    gradientColors = [const Color(0xFFFFA24B), const Color(0xFFFF8C3A)]; // orange
+  } else if (title.contains('fizik')) {
+    gradientColors = [const Color(0xFF9B8FD6), const Color(0xFF8B7FC6)]; // purple
+  } else if (title.contains('kimi')) {
+    gradientColors = [const Color(0xFF6DC9A8), const Color(0xFF5ABF98)]; // green
+  } else {
+    gradientColors = [const Color(0xFF9B8FD6), const Color(0xFF8B7FC6)]; // default purple
+  }
+
+  final textColor = Colors.black;
+  final subTextColor = Colors.black.withOpacity(0.7);
+  final iconBg = Colors.black.withOpacity(0.15);
+
+  return Padding(
+    padding: EdgeInsets.only(right: index < _liveClasses.length - 1 ? 16 : 0),
+    child: GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => LiveClassroomPage(classData: classData),
+          ),
+        );
+      },
+      child: Container(
+        width: 280,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: gradientColors,
+          ),
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TweenAnimationBuilder<double>(
+                  duration: const Duration(milliseconds: 1000),
+                  tween: Tween<double>(begin: 0.8, end: 1.0),
+                  curve: Curves.easeInOut,
+                  builder: (context, value, child) {
+                    return Transform.scale(
+                      scale: value,
+                      child: Container(
+                        padding:
+                            const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFFF3B30),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: const Row(
+                          children: [
+                            Icon(Icons.circle, color: Colors.white, size: 8),
+                            SizedBox(width: 4),
+                            Text(
+                              'LIVE',
+                              style: TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                  onEnd: () {
+                    setState(() {}); // loop animation
+                  },
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: iconBg,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.people, color: Colors.black, size: 14),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${classData['participants']}',
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  TweenAnimationBuilder<double>(
-                    duration: const Duration(milliseconds: 1000),
-                    tween: Tween<double>(begin: 0.8, end: 1.0),
-                    curve: Curves.easeInOut,
-                    builder: (context, value, child) {
-                      return Transform.scale(
-                        scale: value,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFF3B30),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: const Row(
-                            children: [
-                              Icon(Icons.circle, color: Colors.white, size: 8),
-                              SizedBox(width: 4),
-                              Text(
-                                'LIVE',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                    onEnd: () {
-                      // Restart animation
-                      setState(() {});
-                    },
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                    decoration: BoxDecoration(
-                      color: Colors.black.withOpacity(0.15),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        const Icon(Icons.people, color: Colors.black, size: 14),
-                        const SizedBox(width: 4),
-                        Text(
-                          '${classData['participants']}',
-                          style: const TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: Colors.black,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+            const SizedBox(height: 16),
+            Text(
+              classData['title'],
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.w700,
+                color: textColor,
+                letterSpacing: 0.3,
               ),
-              const SizedBox(height: 16),
-              Text(
-                classData['title'],
-                style: const TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.w700,
-                  color: Colors.black,
-                  letterSpacing: 0.3,
-                ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              classData['mentor'],
+              style: TextStyle(
+                fontSize: 14,
+                color: subTextColor,
+                fontWeight: FontWeight.w500,
               ),
-              const SizedBox(height: 4),
-              Text(
-                classData['mentor'],
+            ),
+            const Spacer(),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(vertical: 12),
+              decoration: BoxDecoration(
+                color: iconBg,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                'Bashkohu Tani',
+                textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black.withOpacity(0.7),
-                  fontWeight: FontWeight.w500,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
                 ),
               ),
-              const Spacer(),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Text(
-                  'Bashkohu Tani',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildUpcomingClassesSection() {
     return Column(
