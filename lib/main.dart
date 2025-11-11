@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   ];
 
   final List<Map<String, dynamic>> _subjects = [
-    {'name': 'Biologji', 'icon': Icons.biotech, 'color': Color(0xFF7BA5D6)},
+    {'name': 'Biologji', 'icon': Icons.biotech, 'color': Color(0xFF59A4FF)},
     {'name': 'Matematikë', 'icon': Icons.calculate, 'color': Color(0xFFE89B6D)},
     {'name': 'Fizikë', 'icon': Icons.science, 'color': Color(0xFF9B8FD6)},
     {'name': 'Kimi', 'icon': Icons.water_drop, 'color': Color(0xFF6DC9A8)},
@@ -691,8 +691,8 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF7BA5D6),
-                    Color(0xFF6B95C6),
+                    Color(0xFF59A4FF),
+                    Color(0xFF59A4FF),
                   ],
                 ),
                 borderRadius: BorderRadius.circular(24),
@@ -892,13 +892,13 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                         height: 72,
                         decoration: BoxDecoration(
                           color: isActive
-                              ? const Color(0xFF7BA5D6)
+                              ? const Color(0xFF59A4FF)
                               : Colors.white.withOpacity(0.08),
                           shape: BoxShape.circle,
                           boxShadow: isActive
                               ? [
                                   BoxShadow(
-                                    color: const Color(0xFF7BA5D6).withOpacity(0.3),
+                                    color: const Color(0xFF59A4FF).withOpacity(0.3),
                                     blurRadius: 12,
                                     spreadRadius: 2,
                                   )
@@ -1737,7 +1737,7 @@ Widget _buildRecommendedSection() {
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                   colors: [
-                    Color(0xFF7BA5D6),
+                    Color(0xFF59A4FF),
                     Color(0xFF6B95C6),
                   ],
                 ),
@@ -2437,7 +2437,7 @@ Widget _buildRecommendedSection() {
       child: Row(
         children: [
           Expanded(
-            child: _buildStatCard('24', 'Mësime', const Color(0xFF7BA5D6)),
+            child: _buildStatCard('24', 'Mësime', const Color(0xFF59A4FF)),
           ),
           const SizedBox(width: 12),
           Expanded(
@@ -2849,8 +2849,8 @@ class _LessonDetailPageState extends State<LessonDetailPage>
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFF7BA5D6),
-                            Color(0xFF6B95C6),
+                            Color(0xFF59A4FF),
+                            Color(0xFF59A4FF),
                           ],
                         ),
                         borderRadius: BorderRadius.circular(24),
@@ -2971,8 +2971,8 @@ class _LessonDetailPageState extends State<LessonDetailPage>
                             decoration: BoxDecoration(
                               gradient: const LinearGradient(
                                 colors: [
-                                  Color(0xFF7BA5D6),
-                                  Color(0xFF6B95C6),
+                                  Color(0xFF59A4FF),
+                                  Color(0xFF59A4FF),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(16),
@@ -3214,7 +3214,7 @@ class NotificationsPage extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
               border: notif['read'] as bool
                   ? null
-                  : Border.all(color: const Color(0xFF7BA5D6).withOpacity(0.3)),
+                  : Border.all(color: const Color(0xFF59A4FF).withOpacity(0.3)),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -3223,7 +3223,7 @@ class NotificationsPage extends StatelessWidget {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: const Color(0xFF7BA5D6),
+                    color: const Color(0xFF59A4FF),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: const Icon(Icons.notifications, color: Colors.black),
@@ -3298,7 +3298,7 @@ class MentorProfilePage extends StatelessWidget {
                 width: 120,
                 height: 120,
                 decoration: const BoxDecoration(
-                  color: Color(0xFF7BA5D6),
+                  color: Color(0xFF59A4FF),
                   shape: BoxShape.circle,
                 ),
                 child: Center(
@@ -3461,7 +3461,7 @@ class MentorProfilePage extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         decoration: BoxDecoration(
                           gradient: const LinearGradient(
-                            colors: [Color(0xFF7BA5D6), Color(0xFF6B95C6)],
+                            colors: [Color(0xFF59A4FF), Color(0xFF59A4FF)],
                           ),
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -3553,7 +3553,7 @@ class AllMentorsPage extends StatelessWidget {
                     width: 80,
                     height: 80,
                     decoration: const BoxDecoration(
-                      color: Color(0xFF7BA5D6),
+                      color: Color(0xFF59A4FF),
                       shape: BoxShape.circle,
                     ),
                     child: Center(
@@ -3937,7 +3937,7 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                   gradient: const LinearGradient(
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
-                    colors: [Color(0xFF7BA5D6), Color(0xFF6B95C6)],
+                    colors: [Color(0xFF59A4FF), Color(0xFF59A4FF)],
                   ),
                   borderRadius: BorderRadius.circular(24),
                 ),
@@ -4002,7 +4002,7 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                     child: LinearProgressIndicator(
                       value: _progress,
                       backgroundColor: Colors.white.withOpacity(0.2),
-                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF7BA5D6)),
+                      valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF59A4FF)),
                       minHeight: 6,
                     ),
                   ),
@@ -4025,7 +4025,7 @@ class _LessonPlayerPageState extends State<LessonPlayerPage> {
                           width: 64,
                           height: 64,
                           decoration: const BoxDecoration(
-                            color: Color(0xFF7BA5D6),
+                            color: Color(0xFF59A4FF),
                             shape: BoxShape.circle,
                           ),
                           child: Icon(
@@ -4215,7 +4215,7 @@ class _QuizPageState extends State<QuizPage> {
                       child: LinearProgressIndicator(
                         value: (_currentQuestion + 1) / _questions.length,
                         backgroundColor: Colors.white.withOpacity(0.2),
-                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF7BA5D6)),
+                        valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFF59A4FF)),
                         minHeight: 8,
                       ),
                     ),
@@ -4611,7 +4611,7 @@ class ClassDetailsPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF7BA5D6), Color(0xFF6B95C6)],
+                    colors: [Color(0xFF59A4FF), Color(0xFF59A4FF)],
                   ),
                   borderRadius: BorderRadius.circular(16),
                 ),
@@ -4815,7 +4815,7 @@ class EditProfilePage extends StatelessWidget {
                     width: 32,
                     height: 32,
                     decoration: const BoxDecoration(
-                      color: Color(0xFF7BA5D6),
+                      color: Color(0xFF59A4FF),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.camera_alt, color: Colors.black, size: 18),
@@ -4942,7 +4942,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFF7BA5D6),
+            activeColor: const Color(0xFF59A4FF),
           ),
         ],
       ),
@@ -5069,7 +5069,7 @@ class HelpPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF7BA5D6),
+                    backgroundColor: const Color(0xFF59A4FF),
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   ),
