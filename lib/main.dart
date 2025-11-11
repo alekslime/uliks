@@ -649,7 +649,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                       ),
                     );
                   },
-                  child: _buildLessonCard(filteredLessons[index], index, 'lessons'),
+                  child: Builder(
+                  builder: (_) => _buildLessonCard(filteredLessons[index], index, 'lessons'),
+                ),
+
                 );
               },
             ),
@@ -658,162 +661,170 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildLessonCard(
-      Map<String, dynamic> lesson, int index, String type) {
-    Set<int> bookmarkSet;
-    switch (type) {
-      case 'recommended':
-        bookmarkSet = _bookmarkedRecommended;
-        break;
-      case 'trending':
-        bookmarkSet = _bookmarkedTrending;
-        break;
-      default:
-        bookmarkSet = _bookmarkedLessons;
-    }
+Widget _buildLessonCard(
+    Map<String, dynamic> lesson, int index, String type) {
+  Set<int> bookmarkSet;
+  switch (type) {
+    case 'recommended':
+      bookmarkSet = _bookmarkedRecommended;
+      break;
+    case 'trending':
+      bookmarkSet = _bookmarkedTrending;
+      break;
+    default:
+      bookmarkSet = _bookmarkedLessons;
+  }
 
-    final isBookmarked = bookmarkSet.contains(index);
-    final heroTag = '$type-$index';
+  final isBookmarked = bookmarkSet.contains(index);
+  final heroTag = '$type-$index';
 
-    return Padding(
-      padding: EdgeInsets.only(right: index < _lessons.length - 1 ? 16 : 0),
-      child: GestureDetector(
-        onTap: () => _onLessonTap(lesson, heroTag),
-        child: Hero(
-          tag: heroTag,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              width: 280,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFF59A4FF),
-                    Color(0xFF59A4FF),
+  // 🔹 Decide card color based on lesson title
+  final isOrange = lesson['title'] == 'Fotosinteza dhe Respirimi';
+  final gradientColors = isOrange
+      ? [const Color(0xFFFF7403), const Color(0xFFFF8C3A)] // orange
+      : [const Color(0xFF59A4FF), const Color(0xFF6BB9FF)]; // blue
+
+  // 🔹 Adjust text/icon color for contrast
+  final textColor = isOrange ? const Color.fromARGB(255, 0, 0, 0) : Colors.black;
+  final subTextColor =
+      isOrange ? const Color.fromARGB(255, 0, 0, 0).withOpacity(0.8) : Colors.black.withOpacity(0.7);
+  final iconBg = isOrange
+      ? Colors.white.withOpacity(0.15)
+      : Colors.black.withOpacity(0.15);
+  final iconColor = textColor;
+
+  return Padding(
+    padding: EdgeInsets.only(right: index < _lessons.length - 1 ? 16 : 0),
+    child: GestureDetector(
+      onTap: () => _onLessonTap(lesson, heroTag),
+      child: Hero(
+        tag: heroTag,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 280,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: gradientColors,
+              ),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        lesson['title'],
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: textColor,
+                          height: 1.2,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _toggleBookmark(index, type),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: iconBg,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            isBookmarked
+                                ? Icons.bookmark
+                                : Icons.bookmark_border,
+                            key: ValueKey(isBookmarked),
+                            color: iconColor,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          lesson['title'],
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                            height: 1.2,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
+                const SizedBox(height: 8),
+                Text(
+                  lesson['subject'],
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: subTextColor,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: iconBg,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      GestureDetector(
-                        onTap: () => _toggleBookmark(index, type),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: Icon(
-                              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                              key: ValueKey(isBookmarked),
-                              color: Colors.black,
-                              size: 20,
+                      child: Row(
+                        children: [
+                          Icon(Icons.star, color: iconColor, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            lesson['rating'].toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    lesson['subject'],
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black.withOpacity(0.7),
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.2,
                     ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.black,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              lesson['rating'].toString(),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: iconBg,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.access_time,
-                              color: Colors.black,
-                              size: 16,
+                      child: Row(
+                        children: [
+                          Icon(Icons.access_time,
+                              color: iconColor, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            lesson['duration'],
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              lesson['duration'],
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildMentorsSection() {
     return Column(
@@ -1260,149 +1271,156 @@ Widget _buildRecommendedSection() {
     );
   }
 
-  Widget _buildTrendingCard(Map<String, dynamic> lesson, int index) {
-    final isBookmarked = _bookmarkedTrending.contains(index);
-    final heroTag = 'trending-$index';
+Widget _buildTrendingCard(Map<String, dynamic> lesson, int index) {
+  final isBookmarked = _bookmarkedTrending.contains(index);
+  final heroTag = 'trending-$index';
 
-    return Padding(
-      padding: EdgeInsets.only(right: index < _trendingLessons.length - 1 ? 16 : 0),
-      child: GestureDetector(
-        onTap: () => _onLessonTap(lesson, heroTag),
-        child: Hero(
-          tag: heroTag,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              width: 280,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFE89B6D),
-                    Color(0xFFD88B5D),
+  // 🔹 Dynamic color logic — based on subject or title
+  final isOrange = lesson['subject'] == 'Matematikë 10' ||
+                   lesson['title'].toString().contains('Ekuacionet');
+
+  final gradientColors = isOrange
+      ? [const Color(0xFFFFA24B), const Color(0xFFFF8C3A)] // orange
+      : [const Color(0xFF59A4FF), const Color(0xFF6BB9FF)]; // blue
+
+  // 🔹 Adaptive text & icon colors for contrast
+  final textColor = isOrange ? Colors.white : Colors.black;
+  final subTextColor =
+      isOrange ? Colors.white.withOpacity(0.8) : Colors.black.withOpacity(0.7);
+  final iconBg = isOrange
+      ? Colors.white.withOpacity(0.15)
+      : Colors.black.withOpacity(0.15);
+  final iconColor = textColor;
+
+  return Padding(
+    padding: EdgeInsets.only(right: index < _trendingLessons.length - 1 ? 16 : 0),
+    child: GestureDetector(
+      onTap: () => _onLessonTap(lesson, heroTag),
+      child: Hero(
+        tag: heroTag,
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: 280,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: gradientColors,
+              ),
+              borderRadius: BorderRadius.circular(24),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        lesson['title'],
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.w700,
+                          color: textColor,
+                          height: 1.2,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _toggleBookmark(index, 'trending'),
+                      child: Container(
+                        width: 32,
+                        height: 32,
+                        decoration: BoxDecoration(
+                          color: iconBg,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            isBookmarked ? Icons.bookmark : Icons.bookmark_border,
+                            key: ValueKey(isBookmarked),
+                            color: iconColor,
+                            size: 20,
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          lesson['title'],
-                          style: const TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black,
-                            height: 1.2,
-                            letterSpacing: 0.3,
-                          ),
-                        ),
+                const SizedBox(height: 8),
+                Text(
+                  lesson['subject'],
+                  style: TextStyle(
+                    fontSize: 15,
+                    color: subTextColor,
+                    fontWeight: FontWeight.w500,
+                    letterSpacing: 0.2,
+                  ),
+                ),
+                const Spacer(),
+                Row(
+                  children: [
+                    Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: iconBg,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      GestureDetector(
-                        onTap: () => _toggleBookmark(index, 'trending'),
-                        child: Container(
-                          width: 32,
-                          height: 32,
-                          decoration: BoxDecoration(
-                            color: Colors.black.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            child: Icon(
-                              isBookmarked ? Icons.bookmark : Icons.bookmark_border,
-                              key: ValueKey(isBookmarked),
-                              color: Colors.black,
-                              size: 20,
+                      child: Row(
+                        children: [
+                          Icon(Icons.star, color: iconColor, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            lesson['rating'].toString(),
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    lesson['subject'],
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: Colors.black.withOpacity(0.7),
-                      fontWeight: FontWeight.w500,
-                      letterSpacing: 0.2,
                     ),
-                  ),
-                  const Spacer(),
-                  Row(
-                    children: [
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.star,
-                              color: Colors.black,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 4),
-                            Text(
-                              lesson['rating'].toString(),
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: iconBg,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(width: 8),
-                      Container(
-                        padding:
-                            const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.15),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.people,
-                              color: Colors.black,
-                              size: 16,
+                      child: Row(
+                        children: [
+                          Icon(Icons.people, color: iconColor, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            lesson['students'],
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: textColor,
                             ),
-                            const SizedBox(width: 4),
-                            Text(
-                              lesson['students'],
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.black,
-                              ),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ],
-              ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
+
 
   Widget _buildPopularSubjectsSection() {
     return Column(
@@ -2657,7 +2675,7 @@ Widget _buildRecommendedSection() {
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
       decoration: BoxDecoration(
         color: Colors.black,
-        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.06))),
+        border: Border(top: BorderSide(color: Colors.white.withOpacity(0.05))),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -2845,16 +2863,17 @@ class _LessonDetailPageState extends State<LessonDetailPage>
                       height: 200,
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xFF59A4FF),
-                            Color(0xFF59A4FF),
-                          ],
-                        ),
-                        borderRadius: BorderRadius.circular(24),
+                      gradient: LinearGradient(
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                        colors: widget.lesson['title'] == 'Fotosinteza dhe Respirimi'
+                            ? [Color(0xFFFF7403), Color(0xFFFF8C3A)]  // orange gradient
+                            : [Color(0xFF59A4FF), Color(0xFF6BB9D6)], // blue gradient
                       ),
+                      borderRadius: BorderRadius.circular(24),
+                    ),
+
+
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -4815,7 +4834,7 @@ class EditProfilePage extends StatelessWidget {
                     width: 32,
                     height: 32,
                     decoration: const BoxDecoration(
-                      color: Color(0xFF59A4FF),
+                      color: Color(0xFF7BA5D6),
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(Icons.camera_alt, color: Colors.black, size: 18),
@@ -4942,7 +4961,7 @@ class _NotificationSettingsPageState extends State<NotificationSettingsPage> {
           Switch(
             value: value,
             onChanged: onChanged,
-            activeColor: const Color(0xFF59A4FF),
+            activeColor: const Color(0xFF7BA5D6),
           ),
         ],
       ),
@@ -5069,7 +5088,7 @@ class HelpPage extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF59A4FF),
+                    backgroundColor: const Color(0xFF7BA5D6),
                     foregroundColor: Colors.black,
                     padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   ),
